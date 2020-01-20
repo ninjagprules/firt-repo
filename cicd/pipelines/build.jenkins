@@ -3,7 +3,7 @@
 def label = "build-jenkins-operator-${UUID.randomUUID().toString()}"
 def home = "/home/jenkins"
 def workspace = "${home}/workspace/build-jenkins-operator"
-def workdir = "${workspace}/src/github.com/ninjagprules/firt-repo/"
+def workdir = "${workspace}/"
 
 podTemplate(label: label,
         containers: [
@@ -15,6 +15,7 @@ podTemplate(label: label,
         ) {
 
     node(label) {
+            dir(workdir) {
             stage('Init') {
                 timeout(time: 3, unit: 'MINUTES') {
                     checkout scm
@@ -45,6 +46,6 @@ podTemplate(label: label,
                     sh 'make build'
                 }
             }
-        
+        }
     }
 }
