@@ -2,7 +2,7 @@
 
 def label = "build-jenkins-operator-${UUID.randomUUID().toString()}"
 def home = "/home/jenkins"
-def workspace = "${home}/workspace/build-jenkins-operator"
+def workspace = "${home}/workspace/agent/build-jenkins-operator"
 def workdir = "${workspace}/"
 
 podTemplate(label: label,
@@ -15,7 +15,7 @@ podTemplate(label: label,
         ) {
 
     node(label) {
-            dir("/tmp/") {
+            dir(workdir) {
             stage('Init') {
                 timeout(time: 3, unit: 'MINUTES') {
                     checkout scm
