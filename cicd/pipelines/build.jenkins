@@ -1,0 +1,49 @@
+#!/usr/bin/env groovy
+
+def label = "build-jenkins-operator-${UUID.randomUUID().toString()}"
+def home = "/home/jenkins"
+def workspace = "${home}/workspace/build-jenkins-operator"
+def workdir = "${workspace}/src/github.com/ninjagprules/firt-repo/"
+
+podTemplate(label: label,
+        containers: [
+                containerTemplate(name: 'go', image: 'golang:1-alpine', command: 'cat', ttyEnabled: true),
+        ],
+        envVars: [
+                envVar(key: 'GOPATH', value: workspace),
+        ],
+        ) {
+
+    node(label) {
+            stage('Init') {
+                timeout(time: 3, unit: 'MINUTES') {
+                    checkout scm
+                }
+                container('go') {
+                    sh """
+                        echo gola;
+                        apk --no-cache --update add make git gcc libc-dev
+                    """
+                }
+            }
+
+            stage('Dep') {
+                container('go') {
+                    sh 'make dep'
+                }
+            }
+
+            stage('Test') {
+                container('go') {
+                    sh 'make test'
+                }
+            }
+
+            stage('Build') {
+                container('go') {
+                    sh 'make build'
+                }
+            }
+        
+    }
+}

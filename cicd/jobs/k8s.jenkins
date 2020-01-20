@@ -1,0 +1,36 @@
+#!/usr/bin/env groovy
+
+folder('test6') {
+  displayName("test6")
+  description("test6")
+}
+
+pipelineJob('test6/k8s-e2e2') {
+    displayName('Kubernetes Plugin E2E Test')
+
+    logRotator {
+        numToKeep(10)
+        daysToKeep(30)
+    }
+
+    configure { project ->
+        project / 'properties' / 'org.jenkinsci.plugins.workflow.job.properties.DurabilityHintJobProperty' {
+            hint('PERFORMANCE_OPTIMIZED')
+        }
+    }
+
+    definition {
+        cpsScm {
+            scm {
+                git {
+                    remote {
+                        url('https://github.com/ninjagprules/firt-repo.git')
+                        credentials('jenkins-operator')
+                    }
+                    branches('*/master')
+                }
+            }
+            scriptPath('cicd/pipelines/k8s.jenkins')
+        }
+    }
+}
