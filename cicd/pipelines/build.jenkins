@@ -21,6 +21,7 @@ podTemplate(label: label,
                 }
                 container('go') {
                     sh """
+                    find /
                         echo gola;
                         apk --no-cache --update add make git gcc libc-dev
                     """
