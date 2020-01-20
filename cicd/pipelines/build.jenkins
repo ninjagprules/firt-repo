@@ -15,7 +15,7 @@ podTemplate(label: label,
         ) {
 
     node(label) {
-            dir("/tmp/) {
+            dir("/tmp/") {
             stage('Init') {
                 timeout(time: 3, unit: 'MINUTES') {
                     checkout scm
